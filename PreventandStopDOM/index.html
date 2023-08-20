@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+    <style>
+        ul{
+            display: none;
+        }
+
+        input {
+            margin: 30px 0;
+        }
+
+        input:focus ~ ul {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <a href="https://fullstack.edu.vn/">Hoc lap trinh</a>
+    <br>
+    <a href="https://google.com.vn">Tim kiem tai day</a>
+
+    
+    <div>
+        <input type="text" placeholder="Tim kiem">
+        <ul>
+            <li>Javascript</li>
+            <li>PHP</li>
+            <li>NodeJS</li>
+        </ul>
+    </div>
+
+    <div class="div">
+        DIV-Stop Propagation
+        <button>Click Here!</button>
+    </div>
+
+    <script src="./main.js"></script>
+</body>
+</html>

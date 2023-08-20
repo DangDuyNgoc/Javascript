@@ -1,0 +1,90 @@
+script.js
+    import { attach } from "./store.js";
+    import App from './component/App.js'
+
+    attach( App, document.getElementById('root'));
+
+store.js
+    import {createStore} from "./core.js";
+    import reducer from "./reducer.js";
+
+    const {attach, connect, dispatch} = createStore(reducer)
+
+    window.dispatch = dispatch;
+
+    export {
+        attach,
+        connect
+    }
+
+core.js
+
+    export default function html([firts, ...string], ...value) {
+        return value.reduce((acc, curr) => acc.concat(curr, string.shift()), [firts])
+        .filter(x => x && x !== true || x === 0)
+        .join('');
+    };
+
+    export function createStore(reducer) {
+        let state = reducer()
+
+        const roots = new Map();
+
+        function render() {
+            for(const[root, component] of roots) {
+                const output = component()
+                root.innerHTML = output;
+            }
+        }
+
+        return {
+            attach(component, root) {
+                roots.set(root, component);
+                render()
+            }, 
+            
+            connect(selector = state => state) {
+                return component => (props, ...args) => 
+                    component(Object.assign({}, props, selector(state), ...args))
+            }, 
+
+            dispatch(action, ...args) {
+                state = reducer(state, action, args);
+                render();
+            }
+        }
+    }
+
+App.js
+    import html from '../core.js'
+    import {connect} from '../store.js'
+
+    const connector = connect();
+
+    function App({cars}) {
+        console.log(cars);
+        return html`
+            <ul>${cars.map(car => `<li>${car}</li>`)}</ul>
+            <button onclick="dispatch('ADD', 'Porche')">ADD</button>
+        `
+    }
+    export default connector(App);
+
+reducer.js
+    const init = {
+        cars: ['BMW'],
+    }
+
+    export default function reducer(state = init, action, args) {
+        console.log(action, args);
+        switch(action) {
+            case 'ADD':
+                const [newCar] = args;
+                return {
+                    ...state,
+                    cars: [...state.cars, newCar] 
+                }
+            default: 
+                return state;
+        }
+    }
